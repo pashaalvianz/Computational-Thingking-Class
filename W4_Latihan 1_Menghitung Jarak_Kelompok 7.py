@@ -4,7 +4,7 @@
 #KAMUS
 # v = kecepatan, dalam meter per sekon (m/s)
 # t = waktu tempuh, dalam sekon (s)
-# j = jarak tempuh, dalam meter (m)
+# j = jarak tempuh, dalam meter (m) ----> Rumus: j = v * t
 
 #ALGORITMA
 # input
