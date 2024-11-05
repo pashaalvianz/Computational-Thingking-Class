@@ -1,3 +1,21 @@
+"""
+Tugas Project 1
+Mata Kuliah Berpikir Komputasional (WI1102)
+Nama Program : " Analisis dan Pengembangan Program Operasional pada Mesin ATM Bersama"
+Kelas : 27
+Nama Anggota:
+    1) Muhammad Arif Pratama (16424389)
+    2) Rifqi Pasha Alviansyah (16424398)
+    3) Alfredo Jumadi Malau (16424413)
+    4) M Zefri Alamsyah (16424415)
+    5) Aruna Rodotuah Girsang (16424425)
+"""
+"""
+
+
+"""
+
+
 import time
 import pandas as pd
 import random
@@ -49,9 +67,9 @@ def validasi_jumlah_uang(jumlah, kelipatan=50000):
 # Tampilan awal ATM sebelum ada user yang menggunakan
 print("=== Selamat datang di ATM Bersama ===")
 print("=== Layanan ATM Bersama hanya melayani transaksi Bank yang terafiliasi ===")
-print("=== Call Centre: (0272) 11988 ===")
+print("=== Call Centre: (0272) 2177 ===")
 
-time.sleep(5)  # Delay sebelum mulai
+time.sleep(3)  # Delay sebelum mulai
 
 # Proses Masukkan No Rekening
 akses_diberikan = False
@@ -130,15 +148,20 @@ while not selesai:
 
             nasabah_df.loc[nasabah_df["NoRekening"] == norek, "Saldo"] += jumlah_setor
             print(f"Anda telah berhasil menyetor sebesar Rp {jumlah_setor}")
+            tampilkan_saldo = input("Apakah Anda ingin menampilkan saldo akhir? (y/n): ").lower()
+            if tampilkan_saldo == 'y':
+                saldo_akhir = nasabah_df.loc[nasabah_df["NoRekening"] == norek, "Saldo"].values[0]
+                print(f"Sisa saldo Anda: Rp {saldo_akhir}")
+            break
             break
 
 
-    elif pilihan == "3":
+    elif pilihan == "3": # Transfer
         norek_tujuan = input("Masukkan nomor rekening tujuan: ")
         jumlah_transfer = int(input("Masukkan jumlah transfer: "))
         user_tujuan = nasabah_df[nasabah_df["NoRekening"] == norek_tujuan]
         if not user_tujuan.empty:
-            konfirmasi = input(f"Apakah Anda yakin ingin mentransfer Rp {jumlah_transfer} ke rekening atas nama {user_tujuan['Nama'].values[0]}? (y/n): ").lower()
+            konfirmasi = input(f"Apakah Anda yakin ingin mentransfer Rp {jumlah_transfer} ke nomer rekening rekening atas nama {user_tujuan['Nama'].values[0]}? (y/n): ").lower()
             if konfirmasi == 'y':
                 if jumlah_transfer <= user["Saldo"].values[0]:
                     nasabah_df.loc[nasabah_df["NoRekening"] == norek, "Saldo"] -= jumlah_transfer
@@ -148,6 +171,7 @@ while not selesai:
                     print("Saldo tidak mencukupi.")
             else:
                 print("Transfer dibatalkan.")
+            
         else:
             print("Rekening tujuan tidak ditemukan.")
 
@@ -228,9 +252,9 @@ while not selesai:
                 print("Pembayaran BPJS dibatalkan.")
 
     elif pilihan == "5":  # Keluar
-        print("Apakah Anda ingin melakukan transaksi lain? (y/n): ", end="")
+        print("Apakah Anda yakin ingin melakukan keluar? (y/n): ", end="")
         transaksi_lain = input().lower()
-        if transaksi_lain == 'y':
+        if transaksi_lain == 'n':
             continue
         else:
             print("Terima kasih telah menggunakan ATM Bersama. Silakan ambil kartu Anda.")
