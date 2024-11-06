@@ -10,7 +10,71 @@ Nama Anggota:
     4) M Zefri Alamsyah (16424415)
     5) Aruna Rodotuah Girsang (16424425)
 """
+# Last edited : 6 November 14.00
 """
+PENJELASAN PROGRAM/DEKOMPOSISI
+1.	Ide Utama 1: Proses Masukkan No Rekening
+Sub-poin 1: Tampilkan input untuk No Rekening
+1.1	Sub-poin 1.1: Ambil 3 nomor awal dari No Rekening untuk menentukan nama bank.
+1.2	Sub-poin 1.2: Cek apakah No Rekening sesuai dengan database.
+-	Sub-poin 1.2.1: Apabila No Rekening sesuai, lanjut ke Ide Utama.
+-	Sub-poin 1.2.2: Apabila No Rekening tidak sesuai, tampilkan pesan kesalahan dan kembali ke Sub-poin 1.1.
+
+2.	Ide Utama 2: Proses Masukkan PIN.
+Sub-poin 2: Tampilkan input untuk memasukkan PIN.
+2.1	Sub-poin 2.1: Cek apakah PIN sesuai dengan database
+-	Sub-poin 2.1.1: Apabila PIN sesuai, lanjut ke Ide Utama 3
+-	Sub-poin 2.1.2: Apabila PIN tidak sesuai:
+  -  Sub-poin 2.1.2.1: Tampilkan pesan "PIN salah, masukkan kembali.
+  -  Sub-poin 2.1.2.2: Hitung jumlah percobaan
+  -  Sub-poin 2.1.2.3: Jika jumlah percobaan kurang dari 3, kembali ke Sub-poin 2. Jika sudah 3 kali dan salah, tampilkan pesan "Transaksi tidak dapat dilanjutkan."
+
+3.	Ide Utama 3: Pilih Menu Transaksi
+Sub-poin 3: Tampilkan pilihan menu:
+ 	1. Tarik Tunai
+ 	2. Setor Tunai
+ 	3. Transfer
+ 	4. Transaksi Lain
+ 	5. Keluar
+4.	Ide Utama 4: Pengecekan Saldo Mengakses Data Saldo Pengguna
+4.1	Sub-poin 4.1 : Mengambil data saldo dari sumber data (database). 
+4.2	Sub-poin 4.2 : Memproses Data
+-	Sub poin 4.2.1 : Apabila saldo tidak dapat ditampilkan, tampilkan pesan "Saldo tidak   dapat ditampilkan saat ini. Silakan coba lagi nanti."
+-	Sub-poin 4.2.2 : Apabila Saldo dapat ditampilkan, tampilkan pesan “Saldo anda {Nominal saldo} ”
+4.3	Sub-poin 4.3 : Tampilan Saldo (Format Angka dengan Pemisah Ribuan)
+-	Sub-poin 4.3.1 :  Mengubah format saldo agar lebih mudah dibaca dengan menggunakan pemisah ribuan (contoh: Rp 5.000.000).
+4.4	Sub-poin 4.4 : Tindakan Setelah Pengecekan Saldo 
+-	Sub-poin 4.4.1 : Apabila pengguna ingin melanjutkan, tampilkan menu utama untuk   transaksi lain seperti tarik tunai, transfer, dan cek saldo.
+-	Sub-poin 4.4.2 : Apabila pengguna memilih keluar, akhiri sesi dengan menampilkan pesan "Terima kasih telah menggunakan layanan kami" lalu akhiri program.
+
+5.	Ide utama 5 : Transaksi Transfer
+5.1	Sub-poin 5.1: Transaksi transfer pada bank yang sama
+-	Sub-poin 5.1.1: Memilih nomor tujuan transfer
+-	Sub-poin 5.1.2: Input nominal transfer yang diinginkan pengguna
+-	Sub-poin 5.1.3: Cek apakah saldo pengguna lebih besar atau sama dengan nominal transfer yang diinginkan 
+-	Sub-poin 5.1.3.1: Apabila saldo pengguna lebih besar atau sama dengan nominal transfer, bank akan mentransfer sejumlah nominal awal yang di input dan mengurangi saldo dengan nominal yang ditransfer
+-	Sub-poin 5.1.3.2: Apabila saldo pengguna lebih kecil dari nominal transfer, transaksi transfer tidak dapat dilakukan, tampilkan pesan "Saldo anda tidak cukup untuk melakukan transaksi transfer
+5.2	Sub-poin 1.2: Transaksi transfer pada bank yang berbeda
+-	Sub-poin 5.2.1: Memilih nomor tujuan transfer
+-	Sub-poin 5.2.2: Input nominal transfer yang diinginkan pengguna
+-	Sub-poin 5.2.3: Cek apakah saldo pengguna lebih besar atau sama dengan nominal transfer yang diinginkan serta biaya tambahan (admin)
+-	Sub-poin 5.2.3.1: Apabila saldo pengguna lebih besar atau sama dengan nominal transfer serta biaya tambahan (admin), bank akan mentransfer sejumlah nominal awal yang di input dan mengurangi saldo dengan nominal yang ditransfer serta biaya tambahan (admin)
+-	Sub-poin 5.2.3.2: Apabila saldo pengguna lebih kecil dari nominal transfer serta biaya tambahan (admin), transaksi transfer tidak dapat dilakukan, tampilkan pesan "Saldo anda tidak cukup untuk melakukan transaksi transfer
+ 
+6.	Ide utama 6: Penarikan tunai
+6.1	Sub-poin 6.1: Input nominal yang ingin ditarik
+-	Sub-poin 6.1.1: Menerima input nominal uang yang ingin diambil dari saldo rekenging
+-	Sub-poin 6.1.2: Apabila nominal yang ingin diambil lebih besar dari saldo rekening, tampilkan pesan “Saldo anda tidak cukup untuk melakukan penarikan tunai” dan hentikan perintah
+-	Sub-poin 6.1.3: Berikan opsi untuk penampilan saldo akhir setelah output
+6.2	Sub-poin 6.2: Pengolahan input pada saldo rekening
+-	Sub-poin 6.2.1: Mengurangi saldo awal pada rekening pengguna dengan input nominal
+-	Sub-poin 6.2.2: Mentranslasi input nominal ke uang tunai kertas
+6.3	Sub-poin 1.3: Output uang tunai 
+-	Sub-poin 6.3.1: Mengeluarkan uang tunai kertas sesuai nilai input nominal
+-	Sub-poin 6.3.2: Apabila pengguna memilih “iya” pada pilihan penampilan saldo akhir, tampilkan besar saldo awal setelah dikurangi oleh input nominal
+6.4	Sub-poin 6.4: Penentuan pengulangan layanan transaksi
+-	Sub-poin 6.4.1 : Apabila pengguna ingin melanjutkan, tampilkan menu utama untuk   	transaksi lain seperti tarik tunai, transfer, dan cek saldo
+-	Sub-poin 6.4.2 : Apabila pengguna memilih keluar, akhiri sesi dengan menampilkan pesan                             "Terima kasih telah menggunakan layanan kami" lalu akhiri program.
 
 
 """
@@ -22,7 +86,7 @@ import random
 
 # Data nasabah yang dilayani ATM Bersama hasil generalisasi
 nasabah = [
-    ["Albrian Wijaya", "1230001", "Bank Mandiri", "1234", 500000000, "081234567890"],
+    ["Fufufafa", "1230001", "Bank Mandiri", "1234", 50000000000000000, "081234567890"],
     ["Bayu Eka", "1230002", "Bank Mandiri", "5678", 750000, "081234567891"],
     ["Maria Charissa Paquita", "1230003", "Bank Mandiri", "4321", 300000, "081234567892"],
     ["Charissa Nabilla Rahmadani", "4560001", "Bank BRI", "1111", 2000000, "082345678901"],
@@ -53,6 +117,7 @@ nasabah = [
     ["Tika Nugraheni", "4560031", "Bank BRI", "1919", 670000, "082345678932"],
     ["Adhwa Almasah", "7890032", "Bank BNI", "2020", 4500000, "083456789034"],
 ]
+
 # Membuat DataFrame dari data nasabah
 nasabah_df = pd.DataFrame(nasabah, columns=["Nama", "NoRekening", "Bank", "PIN", "Saldo", "NoTelepon"])
 
@@ -94,7 +159,7 @@ while True:
     else:
         print("Nomor rekening tidak dikenali. Silakan coba nomor rekening yang lain.")
         time.sleep(5)
-
+        
 # Proses Masukkan PIN
 while not akses_diberikan:
     pin = input("Masukkan PIN Anda: ")
