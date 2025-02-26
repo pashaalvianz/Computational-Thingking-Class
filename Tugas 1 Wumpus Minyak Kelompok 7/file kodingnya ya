@@ -1,0 +1,384 @@
+## KODE PROGRAM WUMPUS MINYAK KELOMPOK 7 KELAS 13 Literasi Data da IA
+# Nama Anggota :
+# 1. Raindra Adam Firdaus (12224005)
+# 2. Rifqi Pasha Alviansyah (12224010) - Code Editor
+# 3. Michael Hans Manao (12224013)
+# 4. Naufal Yaafi Renanda (12224027)
+# 5. M Zefri Alamsyah (12224061)
+# 6. Muhammad Hanif Ar R (12224063)
+
+
+import tkinter as tk
+from tkinter import messagebox
+from tkinter import ttk 
+import random
+
+# Konstanta
+GRID_SIZE = 4  
+CELL_SIZE = 100
+INVESTASI_AWAL = 10000
+  # Investasi awal dalam USD
+BIAYA_GERAK = 20  # Biaya pergerakan
+
+# Objek dalam grid
+OIL_RESERVOIR = "OR"
+HIGH_PRESSURE = "HP"
+DRY_HOLE = "DH"
+HIGH_PRESSURE_INDICATOR = "HI"
+WATER_ZONE = "WZ"
+OIL_SEEPAGE = "OS"
+
+OBJECTS = [OIL_RESERVOIR, HIGH_PRESSURE, DRY_HOLE, HIGH_PRESSURE_INDICATOR, WATER_ZONE, OIL_SEEPAGE]
+
+# Gaji tenaga kerja per eksplorasi (dalam USD)
+GAJI = {
+    "Geologist": 500,
+    "Geophysicist": 500,
+    "Drilling Engineer": 3000,
+    "Reservoir Engineer": 500,
+    "Production Engineer": 2000
+}
+
+class OilExplorationGame:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Game Eksplorasi Minyak Bumi")
+
+        # Variabel game
+        self.saldo = INVESTASI_AWAL
+        self.player_pos = [0, 0]  #Pemain mulai dari koordinat (0,0) di kiri bawah
+        self.can_move = True  # Untuk mengontrol satu kali gerak per langkah
+
+        self.grid_info = {}  # Dictionary untuk menyimpan info grid
+
+        # Tampilan awal
+        self.welcome_screen()
+
+    def welcome_screen(self):
+        """Tampilan awal dengan judul dan loading bar"""
+        self.welcome_frame = tk.Frame(self.root)
+        self.welcome_frame.pack(fill="both", expand=True)
+
+    # Label judul
+        self.title_label = tk.Label(
+            self.welcome_frame, text="Selamat Datang di Game Sang Ekspedisi dari Jatinewyork ",
+            font=("Arial", 24, "bold")
+        )
+        self.title_label.pack(pady=20)
+
+        self.title_label = tk.Label(
+            self.welcome_frame, text="Sebuah Game Modifikasi Game Wumpus World Menjadi Eksplorasi Minyak Berbasis Python",
+            font=("Arial", 14, "bold")
+        )
+        self.title_label.pack(pady=20)
+
+        self.title_label = tk.Label(
+            self.welcome_frame, text="Karya Kelompok 7 Kelas 13 WI2002",
+            font=("Arial", 14, "bold")
+        )
+        self.title_label.pack(pady=20)
+
+    # Progress Bar
+        self.loading_progress = ttk.Progressbar(self.welcome_frame, orient="horizontal", length=300, mode="determinate")
+        self.loading_progress.pack(pady=10)
+
+    # Mulai proses loading
+        self.update_loading_bar()
+
+    def update_loading_bar(self):
+        """Animasi loading bar dengan kecepatan acak"""
+        if self.loading_progress["value"] < 100:
+            self.loading_progress["value"] += random.randint(5, 15)  # Tambahkan nilai acak
+            self.root.after(random.randint(100, 2000
+            ), self.update_loading_bar)  # Waktu acak
+        else:
+            self.loading_progress["value"] = 100
+            self.welcome_frame.destroy()
+            self.tutorial_screen()
+    
+    def tutorial_screen(self):
+
+
+        """Menampilkan menu tutorial sebelum start screen"""
+        self.tutorial_frame = tk.Frame(self.root)
+        self.tutorial_frame.pack(fill="both", expand=True)
+
+        tutorial_text = (
+            "SIAPKAH KAU SANG EKSPEDISI UNTUK MENJELAJAHI HARTA KARUN TERSEMBUNYI DI IBU PERTIWI INI?!\n"
+            "  \n"
+            "Perkenalkan aku Rifqi Pasha Developer Game ini, di sini saya akan membantumu menjelaskan game ini\n"
+            "  \n"
+            "Selayaknya Developer Game lain, saya mempunyai beberapa aturan game, diantaranya\n"
+            "1. Fokus, Atensi, dan Perhatian hanya tertuju pada tujuan game, yakni mencari keberadaan reservoir minyak dan memproduksinya,\n"
+            "2. Setiap pergerakan menghabiskan 20 USD sebagai biaya transport,\n"
+            "3. Setiap memerkerjakan enggineering menghabiskan uang setara dengan gaji yang tertera di bawah,\n"
+            "4. Pastikan memerkerjakan orang sesuai situasi dan kondisi yang tepat agar biaya tidak membengkak dan keuntungan dimaksimalkan,\n"
+            "5. Game dikatakan selesai jika menemukan minyak dan sudah diproduksi,\n"
+            "6. Aturan dapat bertambah dan berkurang seiring berjalannya waktu.\n"
+            "   \n"
+            "Petunjuk : \n"
+            "Oil Reservoir (OR) - Target utama eksplorasi.\n"
+            "High Pressure (HP) - Bahaya blow out jika dibor tanpa analisis.\n"
+            "Dry Hole (DH) - Lubang kering tanpa minyak.\n"
+            "High Pressure Indication (HI) - Indikasi zona tekanan tinggi.\n"
+            "Water Zone (WZ) - Zona air yang tidak mengandung minyak.\n"
+            "Oil Seepage (OS) - Indikasi keberadaan minyak di sekitar.\n\n"
+            "  \n"
+            "Tim Eksplorasi memulai dari grid [0][0] dan berjalan bersamaan terdiri dari:\n"
+            "• Geologist: Identifikasi zona air (WZ) dan dry hole (DH). Gaji : 500 USD\n"
+            "• Geophysicist: Deteksi high pressure zone (HP). Gaji : 500 USD\n"
+            "• Drilling Engineer: Mengebor dan menghindari blow out. Gaji : 3000 USD\n"
+            "• Reservoir Engineer: Evaluasi oil reservoir (OR). Gaji : 500 USD\n"
+            "• Production Engineer: Ekstraksi minyak. Gaji : 2000 USD"
+            "   \n"
+            "   \n"
+            "Disusun Oleh Raindra, Pasha, Hans, Naufal, Zefri, dan Hanif.\n"
+        )
+
+        self.tutorial_label = tk.Label(self.tutorial_frame, text=tutorial_text, font=("Arial", 12), justify="left")
+        self.tutorial_label.pack(pady=20, padx=20)
+
+        self.next_button = tk.Button(
+            self.tutorial_frame, text="Lanjut", font=("Arial", 12, "bold"),
+            command=self.start_screen, bg="blue", fg="white"
+        )
+        self.next_button.pack(pady=10)
+
+    def show_start_screen(self):
+        """Menampilkan tampilan start setelah welcome screen"""
+        self.welcome_frame.destroy()
+        self.start_screen()
+
+    def start_screen(self):
+        """Menghapus tutorial dan menampilkan start screen dengan tombol tutorial"""
+        self.tutorial_frame.destroy()
+
+        self.start_frame = tk.Frame(self.root)
+        self.start_frame.pack(fill="both", expand=True)
+
+    # Tambahkan tombol "Tutorial" di atas game
+        self.tutorial_button = tk.Button(
+            self.start_frame, text="Tutorial", command=self.show_tutorial_window, bg="blue", fg="white"
+        )
+        self.tutorial_button.pack(pady=5)
+
+        self.label_info = tk.Label(
+            self.start_frame, text=f"Anda mendapatkan investasi senilai ${self.saldo} untuk eksplorasi minyak bumi.",
+            font=("Arial", 14, "bold"), fg="black"
+        )
+        self.label_info.pack(pady=20)
+
+        self.start_button = tk.Button(
+            self.start_frame, text="Mulai Eksplorasi", font=("Arial", 12, "bold"),
+            command=self.start_game, bg="green", fg="white"
+        )
+        self.start_button.pack(pady=10)
+
+    def show_tutorial_window(self):
+        """Menampilkan tutorial dalam jendela baru"""
+        tutorial_window = tk.Toplevel(self.root)
+        tutorial_window.title("Panduan Eksplorasi Minyak Bumi")
+        tutorial_window.geometry("400x300")
+
+        tutorial_text = (
+            "SIAPKAH KAU SANG EKSPEDISI UNTUK MENJELAJAHI HARTA KARUN TERSEMBUNYI DI IBU PERTIWI INI?!\n"
+            "  \n"
+            "Perkenalkan aku Rifqi Pasha Developer Game ini, di sini saya akan membantumu menjelaskan game ini\n"
+            "  \n"
+            "Selayaknya Developer Game lain, saya mempunyai beberapa aturan game, diantaranya\n"
+            "1. Fokus, Atensi, dan Perhatian hanya tertuju pada tujuan game, yakni mencari keberadaan reservoir minyak dan memproduksinya,\n"
+            "2. Setiap pergerakan menghabiskan 20 USD sebagai biaya transport,\n"
+            "3. Setiap memerkerjakan enggineering menghabiskan uang setara dengan gaji yang tertera di bawah,\n"
+            "4. Pastikan memerkerjakan orang sesuai situasi dan kondisi yang tepat agar biaya tidak membengkak dan keuntungan dimaksimalkan,\n"
+            "5. Game dikatakan selesai jika menemukan minyak dan sudah diproduksi,\n"
+            "6. Aturan dapat bertambah dan berkurang seiring berjalannya waktu.\n"
+            "   \n"
+            "Petunjuk : \n"
+            "Oil Reservoir (OR) - Target utama eksplorasi.\n"
+            "High Pressure (HP) - Bahaya blow out jika dibor tanpa analisis.\n"
+            "Dry Hole (DH) - Lubang kering tanpa minyak.\n"
+            "High Pressure Indication (HI) - Indikasi zona tekanan tinggi.\n"
+            "Water Zone (WZ) - Zona air yang tidak mengandung minyak.\n"
+            "Oil Seepage (OS) - Indikasi keberadaan minyak di sekitar.\n\n"
+            "  \n"
+            "Tim Eksplorasi memulai dari grid [0][0] dan berjalan bersamaan terdiri dari:\n"
+            "• Geologist: Identifikasi zona air (WZ) dan dry hole (DH). Gaji : 500 USD\n"
+            "• Geophysicist: Deteksi high pressure zone (HP). Gaji : 500 USD\n"
+            "• Drilling Engineer: Mengebor dan menghindari blow out. Gaji : 3000 USD\n"
+            "• Reservoir Engineer: Evaluasi oil reservoir (OR). Gaji : 500 USD\n"
+            "• Production Engineer: Ekstraksi minyak. Gaji : 2000 USD"
+        )
+
+        tutorial_label = tk.Label(tutorial_window, text=tutorial_text, font=("Arial", 10), justify="left")
+        tutorial_label.pack(padx=10, pady=10)
+
+        close_button = tk.Button(tutorial_window, text="Tutup", command=tutorial_window.destroy, bg="red", fg="white")
+        close_button.pack(pady=5)
+
+
+
+    def start_game(self):
+        """Menghapus tampilan awal dan mulai permainan"""
+        self.start_frame.destroy()
+        self.run_exploration_game()
+
+
+    def run_exploration_game(self):
+        """Menampilkan grid eksplorasi minyak"""
+        
+        self.grid = self.generate_grid()
+
+        self.canvas = tk.Canvas(self.root, width=GRID_SIZE * CELL_SIZE + 50, height=GRID_SIZE * CELL_SIZE + 50)
+        self.canvas.pack()
+
+        self.draw_grid()
+
+        # Label saldo
+        self.saldo_label = tk.Label(self.root, text=f"Saldo: ${self.saldo}", font=("Arial", 12, "bold"))
+        self.saldo_label.pack()
+
+        # Tombol navigasi
+        self.button_frame = tk.Frame(self.root)
+        self.button_frame.pack(pady=10)
+            # Tombol eksplorasi
+        self.explore_button = tk.Button(self.root, text="Eksplorasi", command=self.explore, bg="blue", fg="white")
+        self.explore_button.pack(pady=10)
+
+    # Tambahkan tombol "Tutorial" agar bisa dibuka kapan saja
+        self.tutorial_button = tk.Button(self.root, text="Tutorial", command=self.show_tutorial_window, bg="blue", fg="white")
+        self.tutorial_button.pack(pady=5)
+
+        self.up_button = tk.Button(self.button_frame, text="Atas", command=lambda: self.move_player("Up"))
+        self.up_button.grid(row=0, column=1, padx=5, pady=5)
+
+        self.left_button = tk.Button(self.button_frame, text="Kiri", command=lambda: self.move_player("Left"))
+        self.left_button.grid(row=1, column=0, padx=5, pady=5)
+
+        self.right_button = tk.Button(self.button_frame, text="Kanan", command=lambda: self.move_player("Right"))
+        self.right_button.grid(row=1, column=2, padx=5, pady=5)
+
+        self.down_button = tk.Button(self.button_frame, text="Bawah", command=lambda: self.move_player("Down"))
+        self.down_button.grid(row=2, column=1, padx=5, pady=5)
+
+        # Tombol eksplorasi
+        self.explore_button = tk.Button(self.root, text="Eksplorasi", command=self.explore, bg="blue", fg="white")
+        self.explore_button.pack(pady=10)
+
+    def generate_grid(self):
+        grid = [
+            [[], ["WZ"], ["WZ"], ["WZ"]],
+            [["WZ"], ["DH"], ["HI"], ["WZ"]],
+            [["WZ"], ["HI"], ["HP"], ["OS","HI"]],
+            [["WZ"], ["WZ"], ["OS","HI"], ["OR"]],
+        ]
+        return grid
+
+
+    def draw_grid(self):
+        """Menggambar ulang grid dan posisi pemain"""
+        self.canvas.delete("all")
+
+        # Menampilkan koordinat di luar grid
+        for i in range(GRID_SIZE):
+            self.canvas.create_text((i + 0.5) * CELL_SIZE, GRID_SIZE * CELL_SIZE + 10, text=str(i), font=("Arial", 10))
+            self.canvas.create_text(GRID_SIZE * CELL_SIZE + 10, (GRID_SIZE - i - 0.5) * CELL_SIZE, text=str(i), font=("Arial", 10))
+
+        for row in range(GRID_SIZE):
+            for col in range(GRID_SIZE):
+                x1, y1 = col * CELL_SIZE, (GRID_SIZE - row - 1) * CELL_SIZE
+                x2, y2 = x1 + CELL_SIZE, y1 + CELL_SIZE
+                self.canvas.create_rectangle(x1, y1, x2, y2, outline="black")
+
+        # Gambar pemain
+        px, py = self.player_pos[0] * CELL_SIZE, (GRID_SIZE - self.player_pos[1] - 1) * CELL_SIZE
+        self.canvas.create_rectangle(px, py, px + CELL_SIZE, py + CELL_SIZE, fill="blue")
+
+    def move_player(self, direction):
+        """Menggerakkan pemain menggunakan tombol, hanya sekali per langkah"""
+        if not self.can_move:
+            return
+
+        x, y = self.player_pos
+
+        if direction == "Up" and y < GRID_SIZE - 1:
+            self.player_pos[1] += 1
+        elif direction == "Down" and y > 0:
+            self.player_pos[1] -= 1
+        elif direction == "Left" and x > 0:
+            self.player_pos[0] -= 1
+        elif direction == "Right" and x < GRID_SIZE - 1:
+            self.player_pos[0] += 1
+        else:
+            return  # Tidak bisa keluar dari grid
+
+    # Kurangi saldo karena bergerak
+        if self.saldo >= BIAYA_GERAK:
+            self.saldo -= BIAYA_GERAK
+            self.saldo_label.config(text=f"Saldo: ${self.saldo}")  # Update saldo label
+        else:
+            messagebox.showwarning("Peringatan", "Saldo tidak cukup untuk bergerak!")
+            return
+
+        self.draw_grid()
+
+    # Matikan tombol navigasi sampai eksplorasi dilakukan
+        self.can_move = False
+        self.set_navigation_state(tk.DISABLED)
+
+
+    def explore(self):
+        """Eksplorasi lokasi saat ini"""
+        x, y = self.player_pos
+        lokasi = self.grid[y][x]
+
+        self.can_move = True  # Aktifkan kembali navigasi
+        self.set_navigation_state(tk.NORMAL)
+
+        eksplorasi_window = tk.Toplevel(self.root)
+        eksplorasi_window.title("Pilihan Eksplorasi")
+
+        tk.Label(eksplorasi_window, text="Pilih metode eksplorasi:").grid(row=0, column=0, columnspan=3)
+
+        def eksplorasi_aksi(peran, aksi, deteksi, gaji):
+            if self.saldo < gaji:
+                messagebox.showerror("Eksplorasi", "Saldo tidak mencukupi untuk mempekerjakan {}.".format(peran))
+            else:
+                self.saldo -= gaji
+                self.saldo_label.config(text=f"Saldo: ${self.saldo}")  # Update saldo label
+                if any(item in lokasi for item in deteksi):
+                    messagebox.showinfo("Eksplorasi", f"Sebagai {peran}, Anda menemukan {lokasi}!")
+                    if lokasi == ["OR"] and peran == "Production Engineer":
+                        messagebox.showinfo("Menang!", "Selamat! Anda berhasil memproduksi minyak dan memenangkan permainan!")
+                        self.root.quit()
+                else:
+                    messagebox.showinfo("Eksplorasi", f"Sebagai {peran}, Anda tidak menemukan indikasi apapun.")
+                if self.saldo <= 0:
+                    messagebox.showerror("Game Over", "Saldo habis! Permainan berakhir.")
+                    self.root.quit()
+                eksplorasi_window.destroy()
+        opsi_pekerjaan = [
+            ("Tidak melakukan eksplorasi", "memutuskan untuk tidak melakukan eksplorasi", [], 0),
+            ("Geologist", "mengidentifikasi zona air dan dry hole", ["WZ", "DH"], 500),
+            ("Geophysicist", "mendeteksi high pressure zone", ["HI", "HP"], 500),
+            ("Drilling Engineer", "mengebor dan menghindari blow out", [], 3000),
+            ("Reservoir Engineer", "mengevaluasi oil reservoir", ["OS", "OR"], 500),
+            ("Production Engineer", "melakukan ekstraksi minyak", ["OR"], 2000),
+        ]
+
+        for idx, (peran, aksi, deteksi, gaji) in enumerate(opsi_pekerjaan):
+            tk.Button(
+                eksplorasi_window, text=f"{peran} (Gaji: {gaji})", command=lambda p=peran, a=aksi, d=deteksi, g=gaji: eksplorasi_aksi(p, a, d, g)
+            ).grid(row=1 + idx // 3, column=idx % 3, padx=5, pady=5)
+
+    def set_navigation_state(self, state):
+        """Aktifkan atau nonaktifkan tombol navigasi"""
+        self.up_button.config(state=state)
+        self.down_button.config(state=state)
+        self.left_button.config(state=state)
+        self.right_button.config(state=state)
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.geometry("600x600")
+    game = OilExplorationGame(root)
+    root.mainloop()
